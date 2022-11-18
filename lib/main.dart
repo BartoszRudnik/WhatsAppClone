@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:whatsapp_ui/colors.dart';
 import 'package:whatsapp_ui/features/landing/screens/landing_screen.dart';
 import 'package:whatsapp_ui/firebase_options.dart';
+import 'package:whatsapp_ui/router.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -22,11 +23,15 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-        debugShowCheckedModeBanner: false,
-        title: 'Whatsapp UI',
-        theme: ThemeData.dark().copyWith(
-          scaffoldBackgroundColor: backgroundColor,
-        ),
-        home: const LandingScreen());
+      debugShowCheckedModeBanner: false,
+      title: 'Whatsapp UI',
+      theme: ThemeData.dark().copyWith(
+        scaffoldBackgroundColor: backgroundColor,
+      ),
+      home: const LandingScreen(),
+      onGenerateRoute: (settings) => generateRoute(
+        settings,
+      ),
+    );
   }
 }
