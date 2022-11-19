@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:whatsapp_ui/common/utils/utils.dart';
 import 'package:whatsapp_ui/features/auth/screens/otp_screen.dart';
+import 'package:whatsapp_ui/features/auth/screens/user_information_screen.dart';
 
 final authRepositoryProvider = Provider(
   (ref) => AuthRepository(
@@ -21,7 +22,39 @@ class AuthRepository {
     required this.firebaseFirestore,
   });
 
-  void signingWithPhone(String phoneNumber, BuildContext context) async {
+  void verifyOTP({
+    required BuildContext context,
+    required String verificationId,
+    required String userOTP,
+  }) async {
+    try {
+      final navigator = Navigator.of(context);
+
+      final credential = PhoneAuthProvider.credential(
+        verificationId: verificationId,
+        smsCode: userOTP,
+      );
+
+      await firebaseAuth.signInWithCredential(
+        credential,
+      );
+
+      navigator.pushNamedAndRemoveUntil(
+        UserInformationScreen.routeName,
+        (route) => false,
+      );
+    } catch (e) {
+      showSnackBar(
+        context: context,
+        content: e.toString(),
+      );
+    }
+  }
+
+  void signingWithPhone(
+    String phoneNumber,
+    BuildContext context,
+  ) async {
     try {
       await firebaseAuth.verifyPhoneNumber(
         phoneNumber: phoneNumber,
