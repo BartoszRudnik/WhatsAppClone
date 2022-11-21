@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_contacts/contact.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:whatsapp_ui/colors.dart';
 import 'package:whatsapp_ui/common/widgets/loader.dart';
@@ -10,6 +11,13 @@ class SelectContactsScreen extends ConsumerWidget {
   const SelectContactsScreen({
     Key? key,
   }) : super(key: key);
+
+  void selectContact(WidgetRef ref, Contact contact, BuildContext context) {
+    ref.read(selectContactControllerProvider).selectContact(
+          contact,
+          context,
+        );
+  }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -36,19 +44,28 @@ class SelectContactsScreen extends ConsumerWidget {
       ),
       body: ref.watch(getContactsProvider).when(
             data: (contactList) => ListView.builder(
-              itemBuilder: (context, index) => Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4),
-                child: ListTile(
-                  leading: contactList[index].photo == null
-                      ? null
-                      : CircleAvatar(
-                          backgroundImage: MemoryImage(contactList[index].photo!),
-                          radius: 30,
-                        ),
-                  title: Text(
-                    contactList[index].displayName,
-                    style: const TextStyle(
-                      fontSize: 18,
+              itemBuilder: (context, index) => InkWell(
+                onTap: () {
+                  selectContact(
+                    ref,
+                    contactList[index],
+                    context,
+                  );
+                },
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 2.0, vertical: 6),
+                  child: ListTile(
+                    leading: contactList[index].photo == null
+                        ? null
+                        : CircleAvatar(
+                            backgroundImage: MemoryImage(contactList[index].photo!),
+                            radius: 30,
+                          ),
+                    title: Text(
+                      contactList[index].displayName,
+                      style: const TextStyle(
+                        fontSize: 18,
+                      ),
                     ),
                   ),
                 ),
