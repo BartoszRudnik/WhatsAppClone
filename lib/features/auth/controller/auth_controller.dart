@@ -31,6 +31,12 @@ class AuthController {
     required this.authRepository,
   });
 
+  Stream<UserModel> userDataById(String userId) {
+    return authRepository.userData(
+      userId,
+    );
+  }
+
   void signInWithPhone({
     required BuildContext context,
     required String phoneNumber,
