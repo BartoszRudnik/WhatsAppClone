@@ -41,7 +41,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     if (pickedCountry != null && phoneNumber.isNotEmpty) {
       ref.read(authControllerProvider).signInWithPhone(
             context: context,
-            phoneNumber: pickedCountry!.phoneCode + phoneNumber,
+            phoneNumber: "+${pickedCountry!.phoneCode}$phoneNumber",
           );
     } else {
       showSnackBar(
