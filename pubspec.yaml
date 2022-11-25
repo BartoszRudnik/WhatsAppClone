@@ -45,6 +45,9 @@ dependencies:
   uuid: ^3.0.7
   intl: ^0.17.0
   cached_network_image: ^3.2.2
+  video_player: ^2.4.8
+  cached_video_player: ^2.0.3
+  emoji_picker_flutter: ^1.5.1
 
 dev_dependencies:
   flutter_test:

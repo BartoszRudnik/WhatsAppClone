@@ -36,6 +36,19 @@ class _BottomChatFieldState extends ConsumerState<BottomChatField> {
     }
   }
 
+  void selectVideo() async {
+    File? file = await pickVideoFromGallery(
+      context,
+    );
+
+    if (file != null) {
+      sendFileMessage(
+        file,
+        MessageEnum.video,
+      );
+    }
+  }
+
   void sendFileMessage(File file, MessageEnum messageEnum) {
     ref.read(chatControllerProvider).sendFileMesage(
           context,
@@ -135,16 +148,14 @@ class _BottomChatFieldState extends ConsumerState<BottomChatField> {
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
                       IconButton(
-                        onPressed: () {
-                          selectImage();
-                        },
+                        onPressed: () => selectImage(),
                         icon: const Icon(
                           Icons.camera_alt,
                           color: Colors.grey,
                         ),
                       ),
                       IconButton(
-                        onPressed: () {},
+                        onPressed: () => selectVideo(),
                         icon: const Icon(
                           Icons.attach_file,
                           color: Colors.grey,
