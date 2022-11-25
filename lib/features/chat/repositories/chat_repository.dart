@@ -25,6 +25,54 @@ class ChatRepository {
     required this.firebaseFirestore,
   });
 
+  Stream<List<ChatContact>> getChatContacts() {
+    return firebaseFirestore
+        .collection(
+          'users',
+        )
+        .doc(firebaseAuth.currentUser!.uid)
+        .collection(
+          'chats',
+        )
+        .snapshots()
+        .asyncMap(
+      (event) async {
+        List<ChatContact> contacts = [];
+
+        for (final document in event.docs) {
+          final chatContact = ChatContact.fromMap(
+            document.data(),
+          );
+
+          final userData = await firebaseFirestore
+              .collection(
+                'users',
+              )
+              .doc(
+                chatContact.contactId,
+              )
+              .get();
+
+          final user = UserModel.fromMap(
+            userData.data()!,
+          );
+
+          contacts.add(
+            ChatContact(
+              name: user.name,
+              profilePic: user.profilePic,
+              contactId: user.uid,
+              timeSent: chatContact.timeSent,
+              lastMessage: chatContact.lastMessage,
+            ),
+          );
+        }
+
+        return contacts;
+      },
+    );
+  }
+
   Future<void> sendTextMessage({
     required BuildContext context,
     required String text,
@@ -150,50 +198,53 @@ class ChatRepository {
       isSeen: false,
     );
 
-    await firebaseFirestore
-        .collection(
-          'users',
-        )
-        .doc(
-          firebaseAuth.currentUser!.uid,
-        )
-        .collection(
-          'chats',
-        )
-        .doc(
-          receiverUserId,
-        )
-        .collection(
-          'messages',
-        )
-        .doc(
-          messageId,
-        )
-        .set(
-          message.toMap(),
-        );
-
-    await firebaseFirestore
-        .collection(
-          'users',
-        )
-        .doc(
-          receiverUserId,
-        )
-        .collection(
-          'chats',
-        )
-        .doc(
-          firebaseAuth.currentUser!.uid,
-        )
-        .collection(
-          'messages',
-        )
-        .doc(
-          messageId,
-        )
-        .set(
-          message.toMap(),
-        );
+    await Future.wait(
+      [
+        firebaseFirestore
+            .collection(
+              'users',
+            )
+            .doc(
+              firebaseAuth.currentUser!.uid,
+            )
+            .collection(
+              'chats',
+            )
+            .doc(
+              receiverUserId,
+            )
+            .collection(
+              'messages',
+            )
+            .doc(
+              messageId,
+            )
+            .set(
+              message.toMap(),
+            ),
+        firebaseFirestore
+            .collection(
+              'users',
+            )
+            .doc(
+              receiverUserId,
+            )
+            .collection(
+              'chats',
+            )
+            .doc(
+              firebaseAuth.currentUser!.uid,
+            )
+            .collection(
+              'messages',
+            )
+            .doc(
+              messageId,
+            )
+            .set(
+              message.toMap(),
+            ),
+      ],
+    );
   }
 }

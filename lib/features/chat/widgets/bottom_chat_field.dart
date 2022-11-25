@@ -1,24 +1,59 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:whatsapp_ui/colors.dart';
+import 'package:whatsapp_ui/features/chat/controller/chat_controller.dart';
 
-class BottomChatField extends StatefulWidget {
+class BottomChatField extends ConsumerStatefulWidget {
   const BottomChatField({
     Key? key,
+    required this.receiverUserId,
   }) : super(key: key);
 
+  final String receiverUserId;
+
   @override
-  State<BottomChatField> createState() => _BottomChatFieldState();
+  ConsumerState<BottomChatField> createState() => _BottomChatFieldState();
 }
 
-class _BottomChatFieldState extends State<BottomChatField> {
+class _BottomChatFieldState extends ConsumerState<BottomChatField> {
   late TextEditingController messageController;
   bool isShowSendButton = false;
+
+  void sendTextMessage() async {
+    if (isShowSendButton) {
+      ref
+          .read(
+            chatControllerProvider,
+          )
+          .sendTextMessage(
+            context,
+            messageController.text.trim(),
+            widget.receiverUserId,
+          );
+
+      messageController.clear();
+    }
+  }
 
   @override
   void initState() {
     super.initState();
 
     messageController = TextEditingController();
+
+    messageController.addListener(
+      () {
+        if (messageController.text.isNotEmpty) {
+          setState(() {
+            isShowSendButton = true;
+          });
+        } else {
+          setState(() {
+            isShowSendButton = false;
+          });
+        }
+      },
+    );
   }
 
   @override
@@ -34,17 +69,6 @@ class _BottomChatFieldState extends State<BottomChatField> {
       children: [
         Expanded(
           child: TextFormField(
-            onChanged: (value) {
-              if (value.isNotEmpty) {
-                setState(() {
-                  isShowSendButton = true;
-                });
-              } else {
-                setState(() {
-                  isShowSendButton = false;
-                });
-              }
-            },
             controller: messageController,
             decoration: InputDecoration(
               filled: true,
@@ -119,9 +143,14 @@ class _BottomChatFieldState extends State<BottomChatField> {
             backgroundColor: const Color(
               0xFF128C7E,
             ),
-            child: Icon(
-              isShowSendButton ? Icons.send : Icons.mic,
-              color: Colors.white,
+            child: GestureDetector(
+              onTap: () {
+                sendTextMessage();
+              },
+              child: Icon(
+                isShowSendButton ? Icons.send : Icons.mic,
+                color: Colors.white,
+              ),
             ),
           ),
         ),
