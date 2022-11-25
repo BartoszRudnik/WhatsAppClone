@@ -15,6 +15,8 @@ class DisplayTextImageGif extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print(message);
+
     switch (type) {
       case MessageEnum.text:
         return Text(
@@ -35,7 +37,9 @@ class DisplayTextImageGif extends StatelessWidget {
           dataSource: message,
         );
       case MessageEnum.gif:
-        return Container();
+        return CachedNetworkImage(
+          imageUrl: message,
+        );
     }
   }
 }

@@ -48,6 +48,7 @@ dependencies:
   video_player: ^2.4.8
   cached_video_player: ^2.0.3
   emoji_picker_flutter: ^1.5.1
+  giphy_get: ^3.1.1
 
 dev_dependencies:
   flutter_test:

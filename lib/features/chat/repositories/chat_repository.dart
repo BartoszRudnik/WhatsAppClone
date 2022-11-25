@@ -114,6 +114,53 @@ class ChatRepository {
     );
   }
 
+  Future<void> sendGifMessage({
+    required BuildContext context,
+    required String gifUrl,
+    required String receiverUserId,
+    required UserModel senderUser,
+  }) async {
+    try {
+      final timeSent = DateTime.now();
+
+      final messageId = const Uuid().v1();
+
+      final userDataMap = await firebaseFirestore
+          .collection(
+            'users',
+          )
+          .doc(
+            receiverUserId,
+          )
+          .get();
+
+      final receiverUserData = UserModel.fromMap(
+        userDataMap.data()!,
+      );
+
+      _saveDataToContactsCollection(
+        senderUser,
+        receiverUserData,
+        'GIF',
+        timeSent,
+      );
+      _saveMessageToMessageSubcollection(
+        text: gifUrl,
+        timeSent: timeSent,
+        receiverUserId: receiverUserId,
+        receiverUserName: receiverUserData.name,
+        messageType: MessageEnum.gif,
+        messageId: messageId,
+        senderUserName: senderUser.name,
+      );
+    } catch (e) {
+      showSnackBar(
+        context: context,
+        content: e.toString(),
+      );
+    }
+  }
+
   Future<void> sendTextMessage({
     required BuildContext context,
     required String text,

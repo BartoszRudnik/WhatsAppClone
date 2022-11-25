@@ -27,6 +27,20 @@ class _BottomChatFieldState extends ConsumerState<BottomChatField> {
   bool isShowSendButton = false;
   bool showEmojiPicker = false;
 
+  void selectGif() async {
+    final chatProvider = ref.read(chatControllerProvider);
+
+    final gif = await pickGIF(context);
+
+    if (gif != null) {
+      chatProvider.sendGifMessage(
+        context,
+        gif.url!,
+        widget.receiverUserId,
+      );
+    }
+  }
+
   void selectImage() async {
     File? file = await pickImageFromGallery(
       context,
@@ -158,7 +172,7 @@ class _BottomChatFieldState extends ConsumerState<BottomChatField> {
                           ),
                           Flexible(
                             child: IconButton(
-                              onPressed: () {},
+                              onPressed: () => selectGif(),
                               icon: const Icon(
                                 Icons.gif,
                                 color: Colors.grey,
