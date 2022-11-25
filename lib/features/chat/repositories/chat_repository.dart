@@ -25,6 +25,44 @@ class ChatRepository {
     required this.firebaseFirestore,
   });
 
+  Stream<List<Message>> getMessages(String receiverId) {
+    return firebaseFirestore
+        .collection(
+          'users',
+        )
+        .doc(
+          firebaseAuth.currentUser!.uid,
+        )
+        .collection(
+          'chats',
+        )
+        .doc(
+          receiverId,
+        )
+        .collection(
+          'messages',
+        )
+        .orderBy(
+          'timeSent',
+        )
+        .snapshots()
+        .map(
+      (event) {
+        List<Message> messages = [];
+
+        for (final document in event.docs) {
+          messages.add(
+            Message.fromMap(
+              document.data(),
+            ),
+          );
+        }
+
+        return messages;
+      },
+    );
+  }
+
   Stream<List<ChatContact>> getChatContacts() {
     return firebaseFirestore
         .collection(
