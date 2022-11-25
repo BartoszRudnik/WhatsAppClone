@@ -1,6 +1,10 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:whatsapp_ui/colors.dart';
+import 'package:whatsapp_ui/common/enums/message_enum.dart';
+import 'package:whatsapp_ui/common/utils/utils.dart';
 import 'package:whatsapp_ui/features/chat/controller/chat_controller.dart';
 
 class BottomChatField extends ConsumerStatefulWidget {
@@ -18,6 +22,28 @@ class BottomChatField extends ConsumerStatefulWidget {
 class _BottomChatFieldState extends ConsumerState<BottomChatField> {
   late TextEditingController messageController;
   bool isShowSendButton = false;
+
+  void selectImage() async {
+    File? file = await pickImageFromGallery(
+      context,
+    );
+
+    if (file != null) {
+      sendFileMessage(
+        file,
+        MessageEnum.image,
+      );
+    }
+  }
+
+  void sendFileMessage(File file, MessageEnum messageEnum) {
+    ref.read(chatControllerProvider).sendFileMesage(
+          context,
+          file,
+          widget.receiverUserId,
+          messageEnum,
+        );
+  }
 
   void sendTextMessage() async {
     if (isShowSendButton) {
@@ -107,14 +133,22 @@ class _BottomChatFieldState extends ConsumerState<BottomChatField> {
                   width: 100,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.end,
-                    children: const [
-                      Icon(
-                        Icons.camera_alt,
-                        color: Colors.grey,
+                    children: [
+                      IconButton(
+                        onPressed: () {
+                          selectImage();
+                        },
+                        icon: const Icon(
+                          Icons.camera_alt,
+                          color: Colors.grey,
+                        ),
                       ),
-                      Icon(
-                        Icons.attach_file,
-                        color: Colors.grey,
+                      IconButton(
+                        onPressed: () {},
+                        icon: const Icon(
+                          Icons.attach_file,
+                          color: Colors.grey,
+                        ),
                       ),
                     ],
                   ),

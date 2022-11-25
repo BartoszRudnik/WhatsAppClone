@@ -5,9 +5,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:whatsapp_ui/common/widgets/loader.dart';
 import 'package:whatsapp_ui/features/chat/controller/chat_controller.dart';
+import 'package:whatsapp_ui/features/chat/widgets/my_message_card.dart';
+import 'package:whatsapp_ui/features/chat/widgets/sender_message_card.dart';
 import 'package:whatsapp_ui/models/message.dart';
-import 'package:whatsapp_ui/widgets/my_message_card.dart';
-import 'package:whatsapp_ui/widgets/sender_message_card.dart';
 
 class ChatList extends ConsumerStatefulWidget {
   const ChatList({
@@ -53,12 +53,8 @@ class _ChatListState extends ConsumerState<ChatList> {
 
           SchedulerBinding.instance.addPostFrameCallback(
             (timeStamp) {
-              scrollController.animateTo(
+              scrollController.jumpTo(
                 scrollController.position.maxScrollExtent,
-                duration: const Duration(
-                  milliseconds: 300,
-                ),
-                curve: Curves.easeInOutCubic,
               );
             },
           );
@@ -75,6 +71,7 @@ class _ChatListState extends ConsumerState<ChatList> {
                   date: DateFormat.Hm().format(
                     message.timeSent,
                   ),
+                  messageEnum: message.type,
                 );
               }
               return SenderMessageCard(
@@ -82,6 +79,7 @@ class _ChatListState extends ConsumerState<ChatList> {
                 date: DateFormat.Hm().format(
                   message.timeSent,
                 ),
+                messageEnum: message.type,
               );
             },
           );

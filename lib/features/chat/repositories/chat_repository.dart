@@ -1,9 +1,12 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:uuid/uuid.dart';
 import 'package:whatsapp_ui/common/enums/message_enum.dart';
+import 'package:whatsapp_ui/common/repositories/common_firebase_storage_repository.dart';
 import 'package:whatsapp_ui/common/utils/utils.dart';
 import 'package:whatsapp_ui/models/chat_contact.dart';
 import 'package:whatsapp_ui/models/message.dart';
@@ -284,5 +287,86 @@ class ChatRepository {
             ),
       ],
     );
+  }
+
+  void sendFileMessage({
+    required BuildContext context,
+    required File file,
+    required String receiverUserId,
+    required UserModel senderUserData,
+    required ProviderRef ref,
+    required MessageEnum messageEnum,
+  }) async {
+    try {
+      final timeSent = DateTime.now();
+      final messageId = const Uuid().v1();
+
+      final text = await ref
+          .read(
+            commonFirebaseStorageRepositoryProvider,
+          )
+          .storeFileToFirebase(
+            'chat/${messageEnum.name}/${senderUserData.uid}/$receiverUserId/$messageId',
+            file,
+          );
+
+      final receiverDataMap = await firebaseFirestore
+          .collection(
+            'users',
+          )
+          .doc(
+            receiverUserId,
+          )
+          .get();
+
+      final receiverUserData = UserModel.fromMap(
+        receiverDataMap.data()!,
+      );
+
+      String contactMsg;
+
+      switch (messageEnum) {
+        case MessageEnum.image:
+          contactMsg = 'Photo';
+          break;
+        case MessageEnum.audio:
+          contactMsg = 'Audio';
+          break;
+        case MessageEnum.gif:
+          contactMsg = 'GIF';
+          break;
+        case MessageEnum.video:
+          contactMsg = 'Video';
+          break;
+        case MessageEnum.text:
+          contactMsg = text;
+          break;
+        default:
+          contactMsg = text;
+          break;
+      }
+
+      _saveDataToContactsCollection(
+        senderUserData,
+        receiverUserData,
+        contactMsg,
+        timeSent,
+      );
+
+      _saveMessageToMessageSubcollection(
+        receiverUserId: receiverUserId,
+        text: text,
+        timeSent: timeSent,
+        messageId: messageId,
+        senderUserName: senderUserData.name,
+        receiverUserName: receiverUserData.name,
+        messageType: messageEnum,
+      );
+    } catch (e) {
+      showSnackBar(
+        context: context,
+        content: e.toString(),
+      );
+    }
   }
 }
