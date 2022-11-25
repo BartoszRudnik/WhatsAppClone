@@ -5,7 +5,11 @@ class MyMessageCard extends StatelessWidget {
   final String message;
   final String date;
 
-  const MyMessageCard({Key? key, required this.message, required this.date}) : super(key: key);
+  const MyMessageCard({
+    Key? key,
+    required this.message,
+    required this.date,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -17,39 +21,45 @@ class MyMessageCard extends StatelessWidget {
         ),
         child: Card(
           elevation: 1,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(
+              8,
+            ),
+          ),
           color: messageColor,
           margin: const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
-          child: Stack(
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(
-                  left: 10,
-                  right: 30,
-                  top: 5,
-                  bottom: 20,
-                ),
-                child: Text(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(
+              vertical: 4.0,
+              horizontal: 8,
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
                   message,
                   style: const TextStyle(
                     fontSize: 16,
                   ),
+                  textAlign: TextAlign.end,
                 ),
-              ),
-              Positioned(
-                bottom: 4,
-                right: 10,
-                child: Row(
+                const SizedBox(height: 4),
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     Text(
                       date,
-                      style:const TextStyle(
-                        fontSize: 13,
+                      style: const TextStyle(
+                        fontSize: 12,
                         color: Colors.white60,
                       ),
+                      textAlign: TextAlign.end,
                     ),
                     const SizedBox(
-                      width: 5,
+                      width: 2,
                     ),
                     const Icon(
                       Icons.done_all,
@@ -58,8 +68,8 @@ class MyMessageCard extends StatelessWidget {
                     ),
                   ],
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

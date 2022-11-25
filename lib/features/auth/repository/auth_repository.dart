@@ -156,4 +156,19 @@ class AuthRepository {
           ),
         );
   }
+
+  void setUserState(bool isOnline) async {
+    await firebaseFirestore
+        .collection(
+          'users',
+        )
+        .doc(
+          firebaseAuth.currentUser!.uid,
+        )
+        .update(
+      {
+        'isOnline': isOnline,
+      },
+    );
+  }
 }

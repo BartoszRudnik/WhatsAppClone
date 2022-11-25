@@ -75,4 +75,10 @@ class AuthController {
   Future<UserModel?> getUserData() async {
     return authRepository.getCurrentUserData();
   }
+
+  void setUserState(bool isOnline) {
+    authRepository.setUserState(
+      isOnline,
+    );
+  }
 }
