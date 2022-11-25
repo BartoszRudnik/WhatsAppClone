@@ -12,6 +12,7 @@ class BottomChatField extends StatefulWidget {
 
 class _BottomChatFieldState extends State<BottomChatField> {
   late TextEditingController messageController;
+  bool isShowSendButton = false;
 
   @override
   void initState() {
@@ -32,7 +33,18 @@ class _BottomChatFieldState extends State<BottomChatField> {
     return Row(
       children: [
         Expanded(
-          child: TextField(
+          child: TextFormField(
+            onChanged: (value) {
+              if (value.isNotEmpty) {
+                setState(() {
+                  isShowSendButton = true;
+                });
+              } else {
+                setState(() {
+                  isShowSendButton = false;
+                });
+              }
+            },
             controller: messageController,
             decoration: InputDecoration(
               filled: true,
@@ -96,19 +108,19 @@ class _BottomChatFieldState extends State<BottomChatField> {
             ),
           ),
         ),
-        const Padding(
-          padding: EdgeInsets.only(
+        Padding(
+          padding: const EdgeInsets.only(
             bottom: 8.0,
             right: 2,
             left: 2,
           ),
           child: CircleAvatar(
             radius: 25,
-            backgroundColor: Color(
+            backgroundColor: const Color(
               0xFF128C7E,
             ),
             child: Icon(
-              Icons.send,
+              isShowSendButton ? Icons.send : Icons.mic,
               color: Colors.white,
             ),
           ),
