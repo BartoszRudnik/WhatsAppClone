@@ -1,3 +1,4 @@
+import 'package:audioplayers/audioplayers.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:whatsapp_ui/common/enums/message_enum.dart';
@@ -15,7 +16,8 @@ class DisplayTextImageGif extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print(message);
+    bool isPlaying = false;
+    final audioPlayer = AudioPlayer();
 
     switch (type) {
       case MessageEnum.text:
@@ -31,7 +33,33 @@ class DisplayTextImageGif extends StatelessWidget {
           imageUrl: message,
         );
       case MessageEnum.audio:
-        return Container();
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return IconButton(
+              constraints: const BoxConstraints(
+                minWidth: 100,
+              ),
+              onPressed: () async {
+                if (isPlaying) {
+                  await audioPlayer.stop();
+                } else {
+                  await audioPlayer.play(
+                    UrlSource(
+                      message,
+                    ),
+                  );
+                }
+
+                setState(
+                  () => isPlaying = !isPlaying,
+                );
+              },
+              icon: Icon(
+                isPlaying ? Icons.pause_circle : Icons.play_circle,
+              ),
+            );
+          },
+        );
       case MessageEnum.video:
         return VideoPlayer(
           dataSource: message,
