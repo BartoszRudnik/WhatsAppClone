@@ -125,4 +125,16 @@ class ChatController {
           (state) => null,
         );
   }
+
+  void setChatMessageSeen(
+    BuildContext context,
+    String receiverUserId,
+    String messageId,
+  ) {
+    chatRepository.setChatMessageSeen(
+      context,
+      receiverUserId,
+      messageId,
+    );
+  }
 }
