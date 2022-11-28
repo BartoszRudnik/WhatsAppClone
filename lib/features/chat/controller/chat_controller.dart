@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:whatsapp_ui/common/enums/message_enum.dart';
+import 'package:whatsapp_ui/common/providers/message_reply_provider.dart';
 import 'package:whatsapp_ui/features/auth/controller/auth_controller.dart';
 import 'package:whatsapp_ui/features/chat/repositories/chat_repository.dart';
 import 'package:whatsapp_ui/models/chat_contact.dart';
@@ -53,10 +54,21 @@ class ChatController {
       text: text,
       receiverUserId: receiverUserId,
       senderUser: userModel,
+      messageReply: ref.read(
+        messageReplyProvider,
+      ),
     );
+
+    ref.read(messageReplyProvider.notifier).update(
+          (state) => null,
+        );
   }
 
-  void sendGifMessage(BuildContext context, String gifUrl, String receiverUserId) {
+  void sendGifMessage(
+    BuildContext context,
+    String gifUrl,
+    String receiverUserId,
+  ) {
     late UserModel userModel;
 
     ref.read(userDataAuthProvider).when(
@@ -73,7 +85,14 @@ class ChatController {
       gifUrl: newGifUrl,
       receiverUserId: receiverUserId,
       senderUser: userModel,
+      messageReply: ref.read(
+        messageReplyProvider,
+      ),
     );
+
+    ref.read(messageReplyProvider.notifier).update(
+          (state) => null,
+        );
   }
 
   void sendFileMesage(
@@ -97,6 +116,13 @@ class ChatController {
       senderUserData: userModel,
       ref: ref,
       messageEnum: messageEnum,
+      messageReply: ref.read(
+        messageReplyProvider,
+      ),
     );
+
+    ref.read(messageReplyProvider.notifier).update(
+          (state) => null,
+        );
   }
 }

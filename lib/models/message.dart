@@ -11,6 +11,9 @@ class Message {
   final DateTime timeSent;
   final String messageId;
   final bool isSeen;
+  final String repliedMessage;
+  final String repliedTo;
+  final MessageEnum repliedMessageType;
 
   Message({
     required this.senderId,
@@ -20,6 +23,9 @@ class Message {
     required this.timeSent,
     required this.messageId,
     required this.isSeen,
+    required this.repliedMessage,
+    required this.repliedMessageType,
+    required this.repliedTo,
   });
 
   Map<String, dynamic> toMap() {
@@ -31,6 +37,9 @@ class Message {
       'timeSent': timeSent.millisecondsSinceEpoch,
       'messageId': messageId,
       'isSeen': isSeen,
+      'repliedMessage': repliedMessage,
+      'repliedTo': repliedTo,
+      'repliedMessageType': repliedMessageType.name,
     };
   }
 
@@ -43,10 +52,17 @@ class Message {
       timeSent: DateTime.fromMillisecondsSinceEpoch(map['timeSent'] as int),
       messageId: map['messageId'] as String,
       isSeen: map['isSeen'] as bool,
+      repliedMessage: map['repliedMessage'] as String,
+      repliedTo: map['repliedTo'] as String,
+      repliedMessageType: (map['repliedMessageType'] as String).toEnum(),
     );
   }
 
-  String toJson() => json.encode(toMap());
+  String toJson() => json.encode(
+        toMap(),
+      );
 
-  factory Message.fromJson(String source) => Message.fromMap(json.decode(source) as Map<String, dynamic>);
+  factory Message.fromJson(String source) => Message.fromMap(
+        json.decode(source) as Map<String, dynamic>,
+      );
 }
