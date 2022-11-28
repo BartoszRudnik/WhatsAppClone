@@ -1,8 +1,10 @@
 import 'dart:io';
-
+import 'package:path_provider/path_provider.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_sound/flutter_sound.dart';
 import 'package:whatsapp_ui/colors.dart';
 import 'package:whatsapp_ui/common/enums/message_enum.dart';
 import 'package:whatsapp_ui/common/providers/message_reply_provider.dart';
@@ -25,9 +27,12 @@ class BottomChatField extends ConsumerStatefulWidget {
 class _BottomChatFieldState extends ConsumerState<BottomChatField> {
   late TextEditingController messageController;
   late FocusNode focusNode;
+  late FlutterSoundRecorder soundRecorder;
 
   bool isShowSendButton = false;
   bool showEmojiPicker = false;
+  bool isRecorderInit = false;
+  bool isRecording = false;
 
   void selectGif() async {
     final chatProvider = ref.read(chatControllerProvider);
@@ -91,7 +96,48 @@ class _BottomChatFieldState extends ConsumerState<BottomChatField> {
           );
 
       messageController.clear();
+    } else {
+      final tempDir = await getTemporaryDirectory();
+      final path = '${tempDir.path}/flutter_sound.aac';
+
+      if (!isRecorderInit) {
+        return;
+      }
+
+      if (isRecording) {
+        await soundRecorder.stopRecorder();
+
+        sendFileMessage(
+          File(
+            path,
+          ),
+          MessageEnum.audio,
+        );
+      } else {
+        await soundRecorder.startRecorder(
+          toFile: path,
+        );
+      }
+
+      setState(() {
+        isRecording = !isRecording;
+      });
     }
+  }
+
+  void openAudio() async {
+    final status = await Permission.microphone.request();
+
+    if (status != PermissionStatus.granted) {
+    } else {
+      throw RecordingPermissionException(
+        'Microphone permission not allowed',
+      );
+    }
+
+    await soundRecorder.openRecorder();
+
+    isRecorderInit = true;
   }
 
   @override
@@ -100,6 +146,9 @@ class _BottomChatFieldState extends ConsumerState<BottomChatField> {
 
     messageController = TextEditingController();
     focusNode = FocusNode();
+    soundRecorder = FlutterSoundRecorder();
+
+    openAudio();
 
     focusNode.addListener(
       () {
@@ -130,6 +179,8 @@ class _BottomChatFieldState extends ConsumerState<BottomChatField> {
   void dispose() {
     messageController.dispose();
     focusNode.dispose();
+    soundRecorder.closeRecorder();
+    isRecorderInit = false;
 
     super.dispose();
   }
@@ -240,7 +291,11 @@ class _BottomChatFieldState extends ConsumerState<BottomChatField> {
                 child: GestureDetector(
                   onTap: () => sendTextMessage(),
                   child: Icon(
-                    isShowSendButton ? Icons.send : Icons.mic,
+                    isShowSendButton
+                        ? Icons.send
+                        : isRecording
+                            ? Icons.close
+                            : Icons.mic,
                     color: Colors.white,
                   ),
                 ),
