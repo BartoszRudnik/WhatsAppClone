@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:whatsapp_ui/features/auth/controller/auth_controller.dart';
 import 'package:whatsapp_ui/features/status/repository/status_repository.dart';
+import 'package:whatsapp_ui/models/status.dart';
 import 'package:whatsapp_ui/models/user_model.dart';
 
 final statusControllerProvider = Provider(
@@ -23,6 +24,14 @@ class StatusController {
     required this.statusRepository,
     required this.ref,
   });
+
+  Future<List<Status>> getStatuses({
+    required BuildContext context,
+  }) async {
+    return await statusRepository.getStatus(
+      context,
+    );
+  }
 
   void addStatus({
     required BuildContext context,

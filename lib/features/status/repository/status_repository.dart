@@ -160,4 +160,62 @@ class StatusRepository {
       );
     }
   }
+
+  Future<List<Status>> getStatus(BuildContext context) async {
+    List<Status> statusData = [];
+
+    try {
+      List<Contact> contacts = [];
+
+      if (await FlutterContacts.requestPermission()) {
+        contacts = await FlutterContacts.getContacts(
+          withProperties: true,
+        );
+
+        for (final contact in contacts) {
+          final statusesSnapshot = await firebaseFirestore
+              .collection(
+                'status',
+              )
+              .where(
+                'phoneNumber',
+                isEqualTo: contact.phones[0].number.replaceAll(
+                  ' ',
+                  '',
+                ),
+              )
+              .where(
+                'createdAt',
+                isGreaterThan: DateTime.now()
+                    .subtract(
+                      const Duration(
+                        hours: 24,
+                      ),
+                    )
+                    .millisecondsSinceEpoch,
+              )
+              .get();
+
+          for (final tempData in statusesSnapshot.docs) {
+            final tempStatus = Status.fromMap(
+              tempData.data(),
+            );
+
+            if (tempStatus.whoCanSee.contains(firebaseAuth.currentUser!.uid)) {
+              statusData.add(
+                tempStatus,
+              );
+            }
+          }
+        }
+      }
+    } catch (e) {
+      showSnackBar(
+        context: context,
+        content: e.toString(),
+      );
+    }
+
+    return statusData;
+  }
 }
