@@ -76,6 +76,7 @@ class GroupRepository {
         groupPic: profileUrl,
         lastMessage: '',
         members: members,
+        timeSent: DateTime.now(),
       );
 
       await firebaseFirestore

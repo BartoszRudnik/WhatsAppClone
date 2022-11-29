@@ -7,6 +7,7 @@ import 'package:whatsapp_ui/common/providers/message_reply_provider.dart';
 import 'package:whatsapp_ui/features/auth/controller/auth_controller.dart';
 import 'package:whatsapp_ui/features/chat/repositories/chat_repository.dart';
 import 'package:whatsapp_ui/models/chat_contact.dart';
+import 'package:whatsapp_ui/models/group.dart';
 import 'package:whatsapp_ui/models/message.dart';
 import 'package:whatsapp_ui/models/user_model.dart';
 
@@ -34,6 +35,10 @@ class ChatController {
 
   Stream<List<ChatContact>> getChatContacts() {
     return chatRepository.getChatContacts();
+  }
+
+  Stream<List<Group>> getChatGroups() {
+    return chatRepository.getChatGroups();
   }
 
   void sendTextMessage(

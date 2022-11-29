@@ -10,6 +10,7 @@ import 'package:whatsapp_ui/common/providers/message_reply_provider.dart';
 import 'package:whatsapp_ui/common/repositories/common_firebase_storage_repository.dart';
 import 'package:whatsapp_ui/common/utils/utils.dart';
 import 'package:whatsapp_ui/models/chat_contact.dart';
+import 'package:whatsapp_ui/models/group.dart';
 import 'package:whatsapp_ui/models/message.dart';
 import 'package:whatsapp_ui/models/user_model.dart';
 
@@ -63,6 +64,31 @@ class ChatRepository {
         }
 
         return messages;
+      },
+    );
+  }
+
+  Stream<List<Group>> getChatGroups() {
+    return firebaseFirestore
+        .collection(
+          'groups',
+        )
+        .snapshots()
+        .map(
+      (event) {
+        List<Group> groups = [];
+
+        for (final document in event.docs) {
+          final group = Group.fromMap(
+            document.data(),
+          );
+
+          if (group.members.contains(firebaseAuth.currentUser!.uid)) {
+            groups.add(group);
+          }
+        }
+
+        return groups;
       },
     );
   }
