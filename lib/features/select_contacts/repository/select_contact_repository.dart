@@ -3,8 +3,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_contacts/flutter_contacts.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:whatsapp_ui/common/utils/utils.dart';
-import 'package:whatsapp_ui/models/user_model.dart';
 import 'package:whatsapp_ui/features/chat/screens/mobile_chat_screen.dart';
+import 'package:whatsapp_ui/models/user_model.dart';
 
 final selectContactRepositoryProvider = Provider(
   (ref) => SelectContactRepository(
@@ -63,6 +63,7 @@ class SelectContactRepository {
             arguments: {
               'name': userData.name,
               'uid': userData.uid,
+              'isGroupChat': false,
             },
           );
         }

@@ -14,10 +14,12 @@ import 'package:whatsapp_ui/models/message.dart';
 class ChatList extends ConsumerStatefulWidget {
   const ChatList({
     super.key,
+    required this.isGroupChat,
     required this.receiverId,
   });
 
   final String receiverId;
+  final bool isGroupChat;
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() => _ChatListState();
@@ -61,13 +63,17 @@ class _ChatListState extends ConsumerState<ChatList> {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<List<Message>>(
-        stream: ref
-            .watch(
-              chatControllerProvider,
-            )
-            .getMessages(
-              widget.receiverId,
-            ),
+        stream: widget.isGroupChat
+            ? ref.watch(chatControllerProvider).getGroupMessages(
+                  widget.receiverId,
+                )
+            : ref
+                .watch(
+                  chatControllerProvider,
+                )
+                .getMessages(
+                  widget.receiverId,
+                ),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) return const Loader();
 

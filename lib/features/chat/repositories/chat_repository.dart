@@ -30,6 +30,38 @@ class ChatRepository {
     required this.firebaseFirestore,
   });
 
+  Stream<List<Message>> getGroupMessages(String groupId) {
+    return firebaseFirestore
+        .collection(
+          'groups',
+        )
+        .doc(
+          groupId,
+        )
+        .collection(
+          'chats',
+        )
+        .orderBy(
+          'timeSent',
+        )
+        .snapshots()
+        .map(
+      (event) {
+        List<Message> messages = [];
+
+        for (final document in event.docs) {
+          messages.add(
+            Message.fromMap(
+              document.data(),
+            ),
+          );
+        }
+
+        return messages;
+      },
+    );
+  }
+
   Stream<List<Message>> getMessages(String receiverId) {
     return firebaseFirestore
         .collection(
@@ -196,6 +228,7 @@ class ChatRepository {
     required String receiverUserId,
     required UserModel senderUser,
     required MessageReply? messageReply,
+    required bool isGroupChat,
   }) async {
     try {
       final timeSent = DateTime.now();
@@ -383,6 +416,7 @@ class ChatRepository {
     required ProviderRef ref,
     required MessageEnum messageEnum,
     required MessageReply? messageReply,
+    required bool isGroupChat,
   }) async {
     try {
       final timeSent = DateTime.now();

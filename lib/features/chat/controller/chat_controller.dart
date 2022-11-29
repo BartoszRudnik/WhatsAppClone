@@ -29,6 +29,10 @@ class ChatController {
     required this.ref,
   });
 
+  Stream<List<Message>> getGroupMessages(String groupId) {
+    return chatRepository.getGroupMessages(groupId);
+  }
+
   Stream<List<Message>> getMessages(String receiverId) {
     return chatRepository.getMessages(receiverId);
   }
@@ -45,6 +49,7 @@ class ChatController {
     BuildContext context,
     String text,
     String receiverUserId,
+    bool isGroupChat,
   ) {
     late UserModel userModel;
 
@@ -62,6 +67,7 @@ class ChatController {
       messageReply: ref.read(
         messageReplyProvider,
       ),
+      isGroupChat: isGroupChat,
     );
 
     ref.read(messageReplyProvider.notifier).update(
@@ -73,6 +79,7 @@ class ChatController {
     BuildContext context,
     String gifUrl,
     String receiverUserId,
+    bool isGroupChat,
   ) {
     late UserModel userModel;
 
@@ -105,6 +112,7 @@ class ChatController {
     File file,
     String receiverUserId,
     MessageEnum messageEnum,
+    bool isGroupChat,
   ) {
     late UserModel userModel;
 
@@ -124,6 +132,7 @@ class ChatController {
       messageReply: ref.read(
         messageReplyProvider,
       ),
+      isGroupChat: isGroupChat,
     );
 
     ref.read(messageReplyProvider.notifier).update(

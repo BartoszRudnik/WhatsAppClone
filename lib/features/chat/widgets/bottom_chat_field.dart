@@ -1,10 +1,11 @@
 import 'dart:io';
-import 'package:path_provider/path_provider.dart';
-import 'package:permission_handler/permission_handler.dart';
+
 import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_sound/flutter_sound.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:whatsapp_ui/colors.dart';
 import 'package:whatsapp_ui/common/enums/message_enum.dart';
 import 'package:whatsapp_ui/common/providers/message_reply_provider.dart';
@@ -15,10 +16,12 @@ import 'package:whatsapp_ui/features/chat/widgets/message_reply_preview.dart';
 class BottomChatField extends ConsumerStatefulWidget {
   const BottomChatField({
     Key? key,
+    required this.isGroupChat,
     required this.receiverUserId,
   }) : super(key: key);
 
   final String receiverUserId;
+  final bool isGroupChat;
 
   @override
   ConsumerState<BottomChatField> createState() => _BottomChatFieldState();
@@ -44,6 +47,7 @@ class _BottomChatFieldState extends ConsumerState<BottomChatField> {
         context,
         gif.url!,
         widget.receiverUserId,
+        widget.isGroupChat,
       );
     }
   }
@@ -80,6 +84,7 @@ class _BottomChatFieldState extends ConsumerState<BottomChatField> {
           file,
           widget.receiverUserId,
           messageEnum,
+          widget.isGroupChat,
         );
   }
 
@@ -93,6 +98,7 @@ class _BottomChatFieldState extends ConsumerState<BottomChatField> {
             context,
             messageController.text.trim(),
             widget.receiverUserId,
+            widget.isGroupChat,
           );
 
       messageController.clear();
