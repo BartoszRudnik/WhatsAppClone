@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:whatsapp_ui/colors.dart';
 import 'package:whatsapp_ui/common/utils/utils.dart';
 import 'package:whatsapp_ui/features/auth/controller/auth_controller.dart';
+import 'package:whatsapp_ui/features/group/screens/create_group_screen.dart';
 import 'package:whatsapp_ui/features/select_contacts/screen/select_contacts_screen.dart';
 import 'package:whatsapp_ui/features/select_contacts/widget/contacts_list.dart';
 import 'package:whatsapp_ui/features/status/screens/confirm_status_screen.dart';
@@ -102,7 +103,14 @@ class _MobileLayoutScreenState extends ConsumerState<MobileLayoutScreen> with Wi
                   child: const Text(
                     'Create group',
                   ),
-                  onTap: () {},
+                  onTap: () => Future.delayed(
+                    const Duration(
+                      milliseconds: 100,
+                    ),
+                    () => Navigator.of(context).pushNamed(
+                      CreateGroupScreen.routeName,
+                    ),
+                  ),
                 ),
               ],
             ),
