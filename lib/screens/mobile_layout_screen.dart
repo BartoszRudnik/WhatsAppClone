@@ -86,12 +86,25 @@ class _MobileLayoutScreenState extends ConsumerState<MobileLayoutScreen> with Wi
           ),
           actions: [
             IconButton(
-              icon: const Icon(Icons.search, color: Colors.grey),
+              icon: const Icon(
+                Icons.search,
+                color: Colors.grey,
+              ),
               onPressed: () {},
             ),
-            IconButton(
-              icon: const Icon(Icons.more_vert, color: Colors.grey),
-              onPressed: () {},
+            PopupMenuButton(
+              icon: const Icon(
+                Icons.more_vert,
+                color: Colors.grey,
+              ),
+              itemBuilder: (context) => [
+                PopupMenuItem(
+                  child: const Text(
+                    'Create group',
+                  ),
+                  onTap: () {},
+                ),
+              ],
             ),
           ],
           bottom: TabBar(
