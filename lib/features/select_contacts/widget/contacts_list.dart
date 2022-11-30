@@ -44,6 +44,7 @@ class ContactsList extends ConsumerWidget {
                                   builder: (context) => MobileChatScreen(
                                     name: chatContact.name,
                                     uid: chatContact.contactId,
+                                    profilePic: chatContact.profilePic,
                                     isGroupChat: false,
                                   ),
                                 ),
@@ -113,6 +114,7 @@ class ContactsList extends ConsumerWidget {
                                   builder: (context) => MobileChatScreen(
                                     name: groupData.name,
                                     uid: groupData.groupId,
+                                    profilePic: groupData.groupPic,
                                     isGroupChat: true,
                                   ),
                                 ),

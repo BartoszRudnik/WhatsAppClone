@@ -232,7 +232,6 @@ class ChatRepository {
   }) async {
     try {
       final timeSent = DateTime.now();
-
       final messageId = const Uuid().v1();
 
       final userDataMap = await firebaseFirestore
